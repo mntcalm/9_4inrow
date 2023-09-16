@@ -1,6 +1,9 @@
 from tkinter import *
 from _thread import *
 import socket
+#import threading
+#import asyncio
+
 
 patter="O"
 patt_x="#1E1"
@@ -24,22 +27,44 @@ my_hit=1   # чей сейчас ход. сравнивается с my_num, е�
 
 
 def h0():
+  do_hit(0)
+
+def h1():
+  do_hit(1)
+
+def h2():
+  do_hit(2)
+
+def h3():
+  do_hit(3)
+
+def h4():
+  do_hit(4)
+
+def h5():
+  do_hit(5)
+
+def h6():
+  do_hit(6)
+
+def do_hit(cn: int):
   global server
   global patter
   global patr
   global patr_col
   global in_game
   global my_hit
-  if (in_game == 1) and (my_hit == my_num):
+  global my_num
+  if (in_game == 1) and (my_hit == int(my_num)):
     for c in range (5, -1, -1):
-      if game_field[0][c] != "X" and game_field[0][c] != "O":
-        game_field[0][c]=patr[int(my_num)]
-        labels[0][c].config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
+      if game_field[cn][c] != "X" and game_field[cn][c] != "O":
+        game_field[cn][c]=patr[int(my_num)]
+        labels[cn][c].config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
         label_status.config(bg="#2C2", text="Ход сделан, ожидаем хода соперника")
 #       передача хода на сервер, цикл ожидания ответа
-        x = "0," + str(c) + ",запись"
-        server.send(bytes(x, 'utf-8'))
-#        my_hit=0
+        msg = str(my_num)+"," + str(cn) + "," + str(c)
+        server.send(bytes(msg, 'utf-8'))
+        my_hit=1-int(my_num)
         return
   elif in_game == 0:
         label_status.config(bg="#2C5", text="--Начните игру соответствующей кнопкой--")
@@ -49,63 +74,7 @@ def h0():
         return
   label_status.config(bg="#F22", text="В этой колонке ход НЕВОЗМОЖЕН, сделайте ВОЗМОЖНЫЙ ход")
 
-def h1():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    if game_field[1][c] != "X" and game_field[1][c] != "O":
-      game_field[1][c]=patter
-      labels[1][c].config(bg="#1E1", text=patter)
-      return
-  label_status.config(bg="#F22", text="В этой колонке ход НЕВОЗМОЖЕН")
 
-def h2():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    if game_field[2][c] != "X" and game_field[2][c] != "O":
-      game_field[2][c]=patter
-      labels[2][c].config(bg="#1E1", text=patter)
-      break
-def h3():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    global s
-    if game_field[3][c] != "X" and game_field[3][c] != "O":
-      game_field[3][c]=patter
-      labels[3][c].config(bg="#1E1", text=patter)
-      break
-def h4():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    if game_field[4][c] != "X" and game_field[4][c] != "O":
-      game_field[4][c]=patter
-      labels[4][c].config(bg="#1E1", text=patter)
-      break
-def h5():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    if game_field[5][c] != "X" and game_field[5][c] != "O":
-      game_field[5][c]=patter
-      labels[5][c].config(bg="#1E1", text=patter)
-      break
-def h6():
-  for c in range (5, -1, -1):
-    global patter
-    global patt_o
-    global patt_x
-    if game_field[6][c] != "X" and game_field[6][c] != "O":
-      game_field[6][c]=patter
-      labels[6][c].config(bg="#1E1", text=patter)
-      break
 
 def h_strt():
   global in_game
@@ -114,21 +83,50 @@ def h_strt():
   global my_num
   if in_game != 1:
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server.connect((HOST, PORT))
+    try:
+      server.connect((HOST, PORT))
+    except:
+      label_status.config(bg="#F22", text="Сервер не отвечает...")
+      return
     in_game = 1
     data = server.recv(1024)
     tx=data.decode('utf-8').split(",")[0]
     my_num=data.decode('utf-8').split(",")[1]
     label_status.config(bg="#2C2", text=tx)
     color_igrok.config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
+#    asyncio.gather(process_game())
+    start_new_thread(process_game,(server,))
+    
+#    my_thread.start()
 #     если соперник есть - присваиваем мой паттерн,номер игрока выходим из функции
 #       если соперника пока нет - цикл ожидания ответа сервера
 #           присвоение моего паттерна, номера игрока, выход из функции
 #  if my_hit !=1:
 #      ждем своего хода
 
-cli_pol = Tk()
+def process_game(server,):
+  global in_game
+  global my_hit
+  global my_num
+#  server.send(bytes("полу-----чено", 'utf-8'))
 
+  while True:
+  
+    data = server.recv(1024)
+    if data:
+#      server.send(bytes("получено", 'utf-8'))
+#      label_status.config(bg="#F22", text="процесс пошел")
+      whos_hit=int(data.decode('utf-8').split(",")[0])
+      if int(whos_hit) == (1 - int(my_num)):
+        x=int(data.decode('utf-8').split(",")[1])
+        y=int(data.decode('utf-8').split(",")[2])
+        labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])
+        game_field[x][y]=patr[1 - int(my_num)]
+        my_hit = 1 - whos_hit
+
+
+
+cli_pol = Tk()
 cli_pol.title("4 in a row")
 cli_pol.geometry("800x650")
 
