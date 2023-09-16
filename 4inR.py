@@ -127,7 +127,7 @@ def process_game(server,):
 
 
 cli_pol = Tk()
-cli_pol.title("4 in a row")
+cli_pol.title("4 in a row  (beta-Version)")
 cli_pol.geometry("800x650")
 
 game_field=[[None] * 6 for i in range(7)]
