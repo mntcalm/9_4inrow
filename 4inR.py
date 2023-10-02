@@ -140,7 +140,10 @@ def process_game(server,):
           label_status.config(bg="#2C2", text="игра закончена - ВЫ ВЫИГРАЛИ!!!")
         else:
           label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
-        labels[x][y].config(bg="#FD0")
+        labels[x][y].config(bg="#FD0", text=patr[whos_hit])
+        game_field[x][y]=patr[whos_hit]
+
+        in_game=0
 #        server.close()
 
       print(type_of_smsg, my_num, whos_hit)

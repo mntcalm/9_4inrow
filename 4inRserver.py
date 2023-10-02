@@ -111,9 +111,6 @@ def clientthread(conn, addr, ami):
                       y=int(message.split(",")[2])
                       game_field[x][y]=patr[who_isit]
 #-----------------здесь логика, закончена ли игра и как 
-                      msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0"
-                      list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
-                      who_active = 1 - who_active
 
 
                       clcltr=0
@@ -124,6 +121,11 @@ def clientthread(conn, addr, ami):
                         list_of_clients[0].close()
                         list_of_clients[1].send(bytes(msg, 'utf-8'))
                         list_of_clients[1].close()
+                      else:
+                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0"
+                        list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
+                        who_active = 1 - who_active
+
 
 #                      if winner != 5:
 #                        msg=str(winner) + "," + str(x) + "," + str(y) + ",1"
