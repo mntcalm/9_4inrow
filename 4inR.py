@@ -50,11 +50,12 @@ def h6():
 def do_hit(cn: int):
   global server
   global patter
-  global patr
-  global patr_col
-  global in_game
-  global my_hit
-  global my_num
+  global patr # массив буквеного обозначения фишек
+  global patr_col # массив цветового обозначения фишек
+  global in_game # игра начата этим клиентом? 1 - начата 0 - не начата
+  global my_hit # мой ход? если да, то совпадает с my_num
+  global my_num # мой номер игрока, выдается сервером
+  global whos_hit # кто сделал ход
   if (in_game == 1) and (my_hit == int(my_num)):
     for c in range (5, -1, -1):
       if game_field[cn][c] != "X" and game_field[cn][c] != "O":
@@ -75,7 +76,6 @@ def do_hit(cn: int):
   label_status.config(bg="#F22", text="В этой колонке ход НЕВОЗМОЖЕН, сделайте ВОЗМОЖНЫЙ ход")
 
 
-
 def h_strt():
   global in_game
   global my_hit
@@ -88,11 +88,16 @@ def h_strt():
     except:
       label_status.config(bg="#F22", text="Сервер не отвечает...")
       return
-    in_game = 1
     data = server.recv(1024)
     tx=data.decode('utf-8').split(",")[0]
     my_num=data.decode('utf-8').split(",")[1]
+    if my_num == "5":
+      label_status.config(bg="#F22", text=tx)
+      server.close()
+      return
+    in_game = 1
     label_status.config(bg="#2C2", text=tx)
+    print("проверяем...", my_num)
     color_igrok.config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
 #    asyncio.gather(process_game())
     start_new_thread(process_game,(server,))
@@ -108,6 +113,7 @@ def process_game(server,):
   global in_game
   global my_hit
   global my_num
+  global whos_hit
 #  server.send(bytes("полу-----чено", 'utf-8'))
 
   while True:
@@ -116,11 +122,30 @@ def process_game(server,):
     if data:
 #      server.send(bytes("получено", 'utf-8'))
 #      label_status.config(bg="#F22", text="процесс пошел")
+      type_of_smsg=int(data.decode('utf-8').split(",")[3])
       whos_hit=int(data.decode('utf-8').split(",")[0])
-      if int(whos_hit) == (1 - int(my_num)):
+      if type_of_smsg == 4:
+        my_hit = whos_hit
+        if my_hit == int(my_num):
+          label_status.config(bg="#2C2", text="Игра началась,СДЕЛАЙТЕ ВАШ ХОД")
+        else:
+          label_status.config(bg="#2D2", text="Игра началась, сейчас ХОД СОПЕРНИКА")
+        continue
+      if type_of_smsg == 1:
+        if my_hit == int(my_num):
+          label_status.config(bg="#2C2", text="игра закончена - ВЫ ВЫИГРАЛИ!!!")
+        elif my_hit != int(my_num):
+          label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
+#        server.close()
+
+      print(type_of_smsg, my_num, whos_hit)
+
+      if (type_of_smsg == 0) and (int(whos_hit) == (1 - int(my_num))):
         x=int(data.decode('utf-8').split(",")[1])
         y=int(data.decode('utf-8').split(",")[2])
         labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])
+        label_status.config(bg="#2C2", text="-----Ваш ход-----")
+
         game_field[x][y]=patr[1 - int(my_num)]
         my_hit = 1 - whos_hit
 
@@ -135,8 +160,14 @@ labels=[[None] * 6 for i in range(7)]
 
 for i in range (0, 7):
   for j in range (0, 6):
-    labels[i][j] = Label(text="{}-{}".format(i,j), bd=1, bg="#333", height="2", width="3")
-    labels[i][j].grid(row=j, column=i, ipadx=15, ipady=15, padx=3, pady=3)
+    labels[i][j] = Label(text="{}-{}".format(i,j), bd=1, bg="#333")
+#    labels[i][j].grid(row=j, column=i, ipadx=15, ipady=15, padx=3, pady=3, height=20, width=30)
+    xx= 3 + i*70
+    yy= 3 + j*80
+    labels[i][j].place(x=str(xx), y=str(yy), height="70", width="65")
+
+
+
 
 btn0 = Button(text="T", padx="3", pady="3", font="13", command=h0)
 btn0.place(x="3", y="510", width="65")
