@@ -28,7 +28,7 @@ def check_win(who_isit,x,y):
       if clcltr >=4:
         winner=who_isit
         print("Ура, 4 в ряд!!!", winner)
-        return 
+        return who_isit
     else:
       clcltr=0
   clcltr = 0
@@ -38,7 +38,7 @@ def check_win(who_isit,x,y):
       if clcltr >=4:
         winner=who_isit
         print("Ура, 4 в ряд!!!", winner)
-        return 
+        return who_isit
     else:
       clcltr=0
 
@@ -51,7 +51,7 @@ def check_win(who_isit,x,y):
       if clcltr >=4:
         winner=who_isit
         print("Ура, 4 в ряд!!!", winner)
-        return 
+        return who_isit
     else:
       clcltr=0
     x0=x0+1
@@ -67,12 +67,12 @@ def check_win(who_isit,x,y):
       if clcltr >=4:
         winner=who_isit
         print("Ура, 4 в ряд!!!", winner)
-        return 
+        return who_isit
     else:
       clcltr=0
     x0=x0+1
     y0=y0-1
-
+  return 5
 
 def clientthread(conn, addr, ami):
     global num_of_hit
@@ -111,18 +111,25 @@ def clientthread(conn, addr, ami):
                       y=int(message.split(",")[2])
                       game_field[x][y]=patr[who_isit]
 #-----------------здесь логика, закончена ли игра и как 
+                      msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0"
+                      list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
+                      who_active = 1 - who_active
+
+
                       clcltr=0
-
-                      check_win(who_isit,x,y)
-
-                      
+                      if check_win(who_isit,x,y) !=5:
+                        print("Победитель",who_isit)
+                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",1"
+                        list_of_clients[0].send(bytes(msg, 'utf-8'))
+                        list_of_clients[0].close()
+                        list_of_clients[1].send(bytes(msg, 'utf-8'))
+                        list_of_clients[1].close()
 
 #                      if winner != 5:
 #                        msg=str(winner) + "," + str(x) + "," + str(y) + ",1"
 #                        list_of_clients[1].send(bytes(msg, 'utf-8'))
 #                        list_of_clients[0].send(bytes(msg, 'utf-8'))
 
-                      print("CheckPoint")
 
 
 # формат сообщений игрокам:
@@ -139,9 +146,6 @@ def clientthread(conn, addr, ami):
 # 7 - неигровое действие, на перспективу, например сообщение в чате
 #
                       
-                      msg=str(who_isit) + "," + str(x) + "," + str(y) + "," + str(status_of_end)
-                      list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
-                      who_active = 1 - who_active
                     """prints the message and address of the
 
 

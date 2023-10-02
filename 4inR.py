@@ -125,6 +125,9 @@ def process_game(server,):
 #      label_status.config(bg="#F22", text="процесс пошел")
       type_of_smsg=int(data.decode('utf-8').split(",")[3])
       whos_hit=int(data.decode('utf-8').split(",")[0])
+      x=int(data.decode('utf-8').split(",")[1])
+      y=int(data.decode('utf-8').split(",")[2])
+      print(data)
       if type_of_smsg == 4:
         my_hit = whos_hit
         if my_hit == int(my_num):
@@ -133,20 +136,18 @@ def process_game(server,):
           label_status.config(bg="#2D2", text="Игра началась, сейчас ХОД СОПЕРНИКА")
         continue
       if type_of_smsg == 1:
-        if my_hit == int(my_num):
+        if whos_hit == int(my_num):
           label_status.config(bg="#2C2", text="игра закончена - ВЫ ВЫИГРАЛИ!!!")
-        elif my_hit != int(my_num):
+        else:
           label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
+        labels[x][y].config(bg="#FD0")
 #        server.close()
 
       print(type_of_smsg, my_num, whos_hit)
 
       if (type_of_smsg == 0) and (int(whos_hit) == (1 - int(my_num))):
-        x=int(data.decode('utf-8').split(",")[1])
-        y=int(data.decode('utf-8').split(",")[2])
         labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])
         label_status.config(bg="#2C2", text="-----Ваш ход-----")
-
         game_field[x][y]=patr[1 - int(my_num)]
         my_hit = 1 - whos_hit
 
