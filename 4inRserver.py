@@ -18,6 +18,14 @@ server.listen(5)
 list_of_clients = []
 who_active = 1 # чей сейчас ход
 
+def s_od():
+  global num_of_hit
+  global list_of_clients
+  global game_field
+  del list_of_clients[0:]
+  game_field=[[None] * 6 for i in range(7)]
+  num_of_hit=0
+
 
 def check_win(who_isit,x,y):
   global game_field
@@ -121,6 +129,7 @@ def clientthread(conn, addr, ami):
                         list_of_clients[0].close()
                         list_of_clients[1].send(bytes(msg, 'utf-8'))
                         list_of_clients[1].close()
+                        s_od()
                       else:
                         msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0"
                         list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
