@@ -17,6 +17,63 @@ server.listen(5)
 
 list_of_clients = []
 who_active = 1 # чей сейчас ход
+
+
+def check_win(who_isit,x,y):
+  global game_field
+  clcltr = 0
+  for i in range (0,6):
+    if game_field[x][i] == patr[who_isit]:
+      clcltr = clcltr + 1
+      if clcltr >=4:
+        winner=who_isit
+        print("Ура, 4 в ряд!!!", winner)
+        return 
+    else:
+      clcltr=0
+  clcltr = 0
+  for i in range (0,7):
+    if game_field[i][y] == patr[who_isit]:
+      clcltr = clcltr + 1
+      if clcltr >=4:
+        winner=who_isit
+        print("Ура, 4 в ряд!!!", winner)
+        return 
+    else:
+      clcltr=0
+
+  clcltr = 0 # диагональ слева и вниз
+  x0 = x - min(x,y)
+  y0 = y - min(x,y)
+  while ((7-x0)*(6-y0) != 0):
+    if game_field[x0][y0] == patr[who_isit]:
+      clcltr = clcltr + 1
+      if clcltr >=4:
+        winner=who_isit
+        print("Ура, 4 в ряд!!!", winner)
+        return 
+    else:
+      clcltr=0
+    x0=x0+1
+    y0=y0+1
+  
+
+  clcltr=0 # диагональ слева и вверх
+  x0 = x - min(x,5-y)
+  y0 = y + min(x,5-y)
+  while ((7-x0)*(y0+1) != 0):
+    if game_field[x0][y0] == patr[who_isit]:
+      clcltr = clcltr + 1
+      if clcltr >=4:
+        winner=who_isit
+        print("Ура, 4 в ряд!!!", winner)
+        return 
+    else:
+      clcltr=0
+    x0=x0+1
+    y0=y0-1
+
+
 def clientthread(conn, addr, ami):
     global num_of_hit
     global who_active
@@ -55,16 +112,9 @@ def clientthread(conn, addr, ami):
                       game_field[x][y]=patr[who_isit]
 #-----------------здесь логика, закончена ли игра и как 
                       clcltr=0
-                      print(who_isit, who_active, status_of_end)
 
-#                      for i in range (0,6):
-#                        if game_field[x][i] == patr[who_isit]:
-#                          clcltr = clcltr + 1
-#                          if clcltr >=4:
-#                            winner=who_isit
-#                            break
-#                        else:
-#                          clcltr=0
+                      check_win(who_isit,x,y)
+
                       
 
 #                      if winner != 5:

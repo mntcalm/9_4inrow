@@ -99,6 +99,7 @@ def h_strt():
     label_status.config(bg="#2C2", text=tx)
     print("проверяем...", my_num)
     color_igrok.config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
+    btn_strt.config(bg="#FFF")
 #    asyncio.gather(process_game())
     start_new_thread(process_game,(server,))
     
@@ -209,7 +210,7 @@ color_sopern.place(x="700", y="200", width="40", height="30")
 label_soti = Label(text="00:00")
 label_soti.place(x="550", y="230", width="140", height="30")
 
-btn_strt = Button(text="начать игру", padx="3", pady="3", font="13", command=h_strt)
+btn_strt = Button(text="начать игру", padx="3", pady="3", font="13", bg="#1C1", command=h_strt)
 btn_strt.place(x="500", y="450", width="250")
 
 
