@@ -81,6 +81,7 @@ def h_strt():
   global my_hit
   global server
   global my_num
+  global game_field
   if in_game != 1:
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
@@ -98,6 +99,10 @@ def h_strt():
     in_game = 1
     label_status.config(bg="#2C2", text=tx)
     print("проверяем...", my_num)
+    for i in range (0, 7):
+      for j in range (0, 6):
+        labels[i][j].config(text="{}-{}".format(i,j), bg="#333")
+        game_field[i][j]="."
     color_igrok.config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
     btn_strt.config(bg="#FFF")
 #    asyncio.gather(process_game())
