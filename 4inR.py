@@ -19,7 +19,7 @@ sope_patt="O"
 sope_col="#E11"
 
 HOST = "127.0.0.1"  # The server's hostname or IP address
-PORT = 65432  # The port used by the server
+PORT = 65434  # The port used by the server
 
 
 in_game=0  # =1 - вы подключены к игре
@@ -147,6 +147,7 @@ def process_game(server,):
           label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
         labels[x][y].config(bg="#FD0", text=patr[whos_hit])
         game_field[x][y]=patr[whos_hit]
+        btn_strt.config(bg="#1C1")
         in_game=0
         
 #        server.close()
