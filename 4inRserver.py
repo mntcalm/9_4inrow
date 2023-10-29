@@ -95,7 +95,7 @@ def clientthread(conn, addr, ami):
       conn.close()
       return
     elif len(list_of_clients) == 1:
-      msg="Вы подключены - ожидаем соперника," + str(len(list_of_clients)-1)
+      msg="4in1 test branch v 0.11 Вы подключены - ожидаем соперника," + str(len(list_of_clients)-1)
       conn.send(bytes(msg, 'utf-8'))
     elif len(list_of_clients) == 2:
       msg="Соперник подключился - игра началась!," + str(len(list_of_clients)-1)
