@@ -82,6 +82,33 @@ def check_win(who_isit,x,y):
     y0=y0-1
   return 5
 
+
+def time_control():
+  global who_active
+  global list_of_clients
+  time_f=[180.0, 180.0]
+  time_i=[int(180), int(180)]
+
+  while True:
+    time.sleep(0.25)
+    time_f[who_active] = time_f[who_active] - 0.25
+    print(time_f[who_active])
+    if time_f[who_active] < 0:
+      msg=str(who_active) + ",0,0,8;"
+      list_of_clients[0].send(bytes(msg, 'utf-8'))
+      list_of_clients[1].send(bytes(msg, 'utf-8'))
+      list_of_clients[0].close()
+      list_of_clients[1].close()
+      s_od()
+    print(time_i)
+    if (round(time_f[0]) != time_i[0]) or (round(time_f[1]) != time_i[1]):
+      time_i[0] = round(time_f[0])
+      time_i[1] = round(time_f[1])
+      msg=str(time_i[0]) + "," + str(time_i[1]) + ",0,5;"
+      list_of_clients[0].send(bytes(msg, 'utf-8'))
+      list_of_clients[1].send(bytes(msg, 'utf-8'))
+#      break
+
 def clientthread(conn, addr, ami):
     global num_of_hit
     global who_active
@@ -89,20 +116,21 @@ def clientthread(conn, addr, ami):
     global status_of_end
     # sends a message to the client whose user object is conn
     if len(list_of_clients) > 2:
-      msg="Игра занята!," + "5"
+      msg="Игра занята!," + "5;"
       conn.send(bytes(msg, 'utf-8'))
       list_of_clients.remove(conn)
       conn.close()
       return
     elif len(list_of_clients) == 1:
-      msg="4in1 test branch v 0.11 Вы подключены - ожидаем соперника," + str(len(list_of_clients)-1)
+      msg="4in1 test branch v 0.12 Вы подключены - ожидаем соперника," + str(len(list_of_clients)-1)
       conn.send(bytes(msg, 'utf-8'))
     elif len(list_of_clients) == 2:
       msg="Соперник подключился - игра началась!," + str(len(list_of_clients)-1)
       conn.send(bytes(msg, 'utf-8'))
       
       who_active=int(time.time())%2
-      msg=str(who_active) + ",0,0,4"
+      msg=str(who_active) + ",0,0,4;"
+      start_new_thread(time_control,())
             # + str(len(list_of_clients)-1)
 #      conn.send(bytes(msg, 'utf-8'))
       list_of_clients[0].send(bytes(msg, 'utf-8'))
@@ -110,9 +138,12 @@ def clientthread(conn, addr, ami):
 
     while True:
             try:
-                message = conn.recv(1024).decode('utf-8')
-                if message:
-                    print(message)
+                message_in = conn.recv(1024).decode('utf-8')
+                if message_in:
+                  message_sp = message_in.split(";")
+                  for i in range (0, len(message_sp)):
+                    message = message_sp[i]
+                    print(message, "----------")
                     who_isit=int(message.split(",")[0])
                     if who_isit == who_active:
                       x=int(message.split(",")[1])
@@ -124,17 +155,18 @@ def clientthread(conn, addr, ami):
                       clcltr=0
                       if check_win(who_isit,x,y) !=5:
                         print("Победитель",who_isit)
-                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",1"
+                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",1;"
                         list_of_clients[0].send(bytes(msg, 'utf-8'))
                         list_of_clients[0].close()
                         list_of_clients[1].send(bytes(msg, 'utf-8'))
                         list_of_clients[1].close()
                         s_od()
                       else:
-                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0"
+                        msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0;"
                         list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
+                        list_of_clients[ami].send(bytes(msg, 'utf-8'))
                         who_active = 1 - who_active
-
+                        print("Шлем сообщение о продолж.игры")
 
 #                      if winner != 5:
 #                        msg=str(winner) + "," + str(x) + "," + str(y) + ",1"
@@ -153,9 +185,9 @@ def clientthread(conn, addr, ami):
 # 2 - кто-то сдался (тот, кто в поле 0)
 # 3 - ничья: 42 хода сделано, свободных ячеек нет, но нет и победителя
 # 4 - игра началась
-# 5 - кончилось время у игрока N
+# 5 - отчет о времени у игроков: нулевое поле = оставшееся время у игрока 0. первое поле - у первого игрока
 # 7 - неигровое действие, на перспективу, например сообщение в чате
-#
+# 8 - время кончилось у игрока N в нулевом поле
                       
                     """prints the message and address of the
 
