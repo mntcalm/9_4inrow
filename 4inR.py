@@ -3,7 +3,7 @@ from _thread import *
 import socket
 #import threading
 #import asyncio
-4inRversion="0.12"
+Rversion="0.12"
 
 patter="O"
 patt_x="#1E1"
