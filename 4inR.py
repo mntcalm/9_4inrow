@@ -98,7 +98,7 @@ def h_strt():
       return
     in_game = 1
     label_status.config(bg="#2C2", text=tx)
-    print("проверяем...", my_num)
+#    print("проверяем...", my_num)
     for i in range (0, 7):
       for j in range (0, 6):
         labels[i][j].config(text="{}-{}".format(i,j), bg="#333")
@@ -180,7 +180,7 @@ def process_game(server,):
 
 #        server.close()
 
-        print(type_of_smsg, my_num, whos_hit)
+#        print(type_of_smsg, my_num, whos_hit)
 
         if (type_of_smsg == 0) and (int(whos_hit) == (1 - int(my_num))):
           labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])

@@ -35,7 +35,7 @@ def check_win(who_isit,x,y):
       clcltr = clcltr + 1
       if clcltr >=4:
         winner=who_isit
-        print("Ура, 4 в ряд!!!", winner)
+#        print("Ура, 4 в ряд!!!", winner)
         return who_isit
     else:
       clcltr=0
@@ -45,7 +45,7 @@ def check_win(who_isit,x,y):
       clcltr = clcltr + 1
       if clcltr >=4:
         winner=who_isit
-        print("Ура, 4 в ряд!!!", winner)
+#        print("Ура, 4 в ряд!!!", winner)
         return who_isit
     else:
       clcltr=0
@@ -58,7 +58,7 @@ def check_win(who_isit,x,y):
       clcltr = clcltr + 1
       if clcltr >=4:
         winner=who_isit
-        print("Ура, 4 в ряд!!!", winner)
+#        print("Ура, 4 в ряд!!!", winner)
         return who_isit
     else:
       clcltr=0
@@ -74,7 +74,7 @@ def check_win(who_isit,x,y):
       clcltr = clcltr + 1
       if clcltr >=4:
         winner=who_isit
-        print("Ура, 4 в ряд!!!", winner)
+#        print("Ура, 4 в ряд!!!", winner)
         return who_isit
     else:
       clcltr=0
@@ -92,7 +92,7 @@ def time_control():
   while True:
     time.sleep(0.25)
     time_f[who_active] = time_f[who_active] - 0.25
-    print(time_f[who_active])
+#    print(time_f[who_active])
     if time_f[who_active] < 0:
       msg=str(who_active) + ",0,0,8;"
       list_of_clients[0].send(bytes(msg, 'utf-8'))
@@ -100,7 +100,7 @@ def time_control():
       list_of_clients[0].close()
       list_of_clients[1].close()
       s_od()
-    print(time_i)
+#    print(time_i)
     if (round(time_f[0]) != time_i[0]) or (round(time_f[1]) != time_i[1]):
       time_i[0] = round(time_f[0])
       time_i[1] = round(time_f[1])
@@ -143,7 +143,7 @@ def clientthread(conn, addr, ami):
                   message_sp = message_in.split(";")
                   for i in range (0, len(message_sp)):
                     message = message_sp[i]
-                    print(message, "----------")
+#                    print(message, "----------")
                     who_isit=int(message.split(",")[0])
                     if who_isit == who_active:
                       x=int(message.split(",")[1])
@@ -154,7 +154,7 @@ def clientthread(conn, addr, ami):
 
                       clcltr=0
                       if check_win(who_isit,x,y) !=5:
-                        print("Победитель",who_isit)
+#                        print("Победитель",who_isit)
                         msg=str(who_isit) + "," + str(x) + "," + str(y) + ",1;"
                         list_of_clients[0].send(bytes(msg, 'utf-8'))
                         list_of_clients[0].close()
@@ -166,7 +166,7 @@ def clientthread(conn, addr, ami):
                         list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
                         list_of_clients[ami].send(bytes(msg, 'utf-8'))
                         who_active = 1 - who_active
-                        print("Шлем сообщение о продолж.игры")
+#                        print("Шлем сообщение о продолж.игры")
 
 #                      if winner != 5:
 #                        msg=str(winner) + "," + str(x) + "," + str(y) + ",1"
@@ -196,7 +196,7 @@ def clientthread(conn, addr, ami):
                     user who just sent the message on the server
                     terminal"""
                     num_of_hit = num_of_hit + 1
-                    print(ami,who_active, "ходов сделано = ",num_of_hit)
+#                    print(ami,who_active, "ходов сделано = ",num_of_hit)
 #                    print("< клиент номер ", ami , "> ", message)
                     # Calls broadcast function to send message to all
 #                    message_to_send = "<" + addr[0] + "> " + message
@@ -215,13 +215,13 @@ def sender(mesg, connection):
   try:
     connection.send(bytes(mesg, 'utf-8'))
   except:
-    print("я пытался")
+#    print("я пытался")
 
 while True:
   if len(list_of_clients) < 5:
     conn, addr = server.accept()
 #  print(conn, "-------------", addr)
-    print (conn, "--------", addr,  " connected")
+#    print (conn, "--------", addr,  " connected")
 
     list_of_clients.append(conn)
     start_new_thread(clientthread,(conn,addr,(len(list_of_clients)-1)))
