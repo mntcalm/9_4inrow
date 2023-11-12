@@ -215,7 +215,7 @@ def sender(mesg, connection):
   try:
     connection.send(bytes(mesg, 'utf-8'))
   except:
-#    print("я пытался")
+    print("я пытался? та вашу ж.... ... ...")
 
 while True:
   if len(list_of_clients) < 5:
