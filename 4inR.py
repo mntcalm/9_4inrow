@@ -173,7 +173,7 @@ def process_game(server,):
           if whos_hit == int(my_num):
             label_status.config(bg="#C22", text="ПОРАЖЕНИЕ --- у Вас закончилось время")
           else:
-            label_status.config(bg="#2C2", text="Вы выиграли - у соперника закончилось время !!!")
+            label_status.config(bg="#2C2", text="ПОБЕДА - у соперника закончилось время !!!")
           in_game=0
           btn_strt.config(bg="#1C1")
 
