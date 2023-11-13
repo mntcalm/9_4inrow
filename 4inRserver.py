@@ -215,14 +215,11 @@ def sender(mesg, connection):
   try:
     connection.send(bytes(mesg, 'utf-8'))
   except:
-    print("я пытался? та вашу ж.... ... ...")
+    print("я пытался...")
 
 while True:
   if len(list_of_clients) < 5:
     conn, addr = server.accept()
-#  print(conn, "-------------", addr)
-#    print (conn, "--------", addr,  " connected")
-
     list_of_clients.append(conn)
     start_new_thread(clientthread,(conn,addr,(len(list_of_clients)-1)))
 server.close()
