@@ -7,7 +7,7 @@ pipeline {
                 sshagent(['ed_8']) {
                     sh '''
                         ssh -o StrictHostKeyChecking=no ed_8@207.182.151.252 '
-                            pkill -f 4inRserver_test || true
+                            ps ax | grep 4inRserver_test | grep -v grep | awk {'print $1'} | xargs kill
                         '
                     '''
                 }
