@@ -18,8 +18,8 @@ pipeline {
             steps {
                 sshagent(['ed_8']) {
                     sh '''
-                        scp /var/jenkins/workspace/4in1_ppl/4inRserver.py ed_8@207.182.151.252:/home/ed_8/4inR/test/4inRserver_test.py
-                        scp /var/jenkins/workspace/4in1_ppl/4inR.py ed_8@207.182.151.252:/var/www/4in1/4inR_test.py
+                        scp /var/jenkins_home/workspace/4in1_ppl/4inRserver.py ed_8@207.182.151.252:/home/ed_8/4inR/test/4inRserver_test.py
+                        scp /var/jenkins_home/workspace/4in1_ppl/4inR.py ed_8@207.182.151.252:/var/www/4in1/4inR_test.py
                 '''
                 }
             }
