@@ -8,11 +8,9 @@ pipeline {
                     sh '''
                         ssh ed_8@207.182.151.252 '
                             echo "Процессы перед завершением:"
-                            pgrep -af 4inRserver_test
-                            pkill -f 4inRserver_test || true
+                            pgrep -f '4inRserver_test.py' | xargs kill
                             echo "Процессы после завершения:"
                             pgrep -af 4inRserver_test
-                            pkill -f 4inRserver_test || true
                         '
                     '''
                 }
