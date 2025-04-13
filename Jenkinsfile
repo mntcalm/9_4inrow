@@ -7,8 +7,8 @@ pipeline {
                 sshagent(['ed_8']) {
                     sh '''
                         ssh ed_8@207.182.151.252 '
-                            echo "Процессы перед завершением:"
-                            pkill -u ed_8 -f 4inRserver_test
+                            pgrep -af 4inRserver_test
+                            pgrep -f 4inRserver_test | xargs kill
                             echo "Процессы после завершения:"
                             pgrep -af 4inRserver_test
                         '
