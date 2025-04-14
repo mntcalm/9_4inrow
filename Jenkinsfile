@@ -35,8 +35,8 @@ pipeline {
                             sed -i "s/127.0.0.1/207.182.151.252/g" /var/www/4in1/4inR_test.py
                             sed -i "s/127.0.0.1/207.182.151.252/g" /home/ed_8/4inR/test/4inRserver_test.py
    
-                            sed -i "s/65432/65434/g" /var/www/4in1/4inR_test.py
-                            sed -i "s/65432/65434/g" /home/ed_8/4inR/test/4inRserver_test.py
+                            sed -i "s/65434/65435/g" /var/www/4in1/4inR_test.py
+                            sed -i "s/65434/65435/g" /home/ed_8/4inR/test/4inRserver_test.py
                         '
                     '''
                 }
