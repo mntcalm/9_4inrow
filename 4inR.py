@@ -3,7 +3,7 @@ from _thread import *
 import socket
 #import threading
 #import asyncio
-
+Rversion="0.12"
 
 patter="O"
 patt_x="#1E1"
@@ -19,7 +19,7 @@ sope_patt="O"
 sope_col="#E11"
 
 HOST = "127.0.0.1"  # The server's hostname or IP address
-PORT = 65432  # The port used by the server
+PORT = 65434  # The port used by the server
 
 
 in_game=0  # =1 - вы подключены к игре
@@ -63,7 +63,7 @@ def do_hit(cn: int):
         labels[cn][c].config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
         label_status.config(bg="#2C2", text="Ход сделан, ожидаем хода соперника")
 #       передача хода на сервер, цикл ожидания ответа
-        msg = str(my_num)+"," + str(cn) + "," + str(c)
+        msg = str(my_num)+"," + str(cn) + "," + str(c) + ";"
         server.send(bytes(msg, 'utf-8'))
         my_hit=1-int(my_num)
         return
@@ -98,7 +98,7 @@ def h_strt():
       return
     in_game = 1
     label_status.config(bg="#2C2", text=tx)
-    print("проверяем...", my_num)
+#    print("проверяем...", my_num)
     for i in range (0, 7):
       for j in range (0, 6):
         labels[i][j].config(text="{}-{}".format(i,j), bg="#333")
@@ -124,40 +124,69 @@ def process_game(server,):
 
   while True:
   
-    data = server.recv(1024)
-    if data:
+    data_in = server.recv(1024)
+    if data_in:
 #      server.send(bytes("получено", 'utf-8'))
 #      label_status.config(bg="#F22", text="процесс пошел")
-      type_of_smsg=int(data.decode('utf-8').split(",")[3])
-      whos_hit=int(data.decode('utf-8').split(",")[0])
-      x=int(data.decode('utf-8').split(",")[1])
-      y=int(data.decode('utf-8').split(",")[2])
-      print(data)
-      if type_of_smsg == 4:
-        my_hit = whos_hit
-        if my_hit == int(my_num):
-          label_status.config(bg="#2C2", text="Игра началась,СДЕЛАЙТЕ ВАШ ХОД")
-        else:
-          label_status.config(bg="#2D2", text="Игра началась, сейчас ХОД СОПЕРНИКА")
-        continue
-      if type_of_smsg == 1:
-        if whos_hit == int(my_num):
-          label_status.config(bg="#2C2", text="игра закончена - ВЫ ВЫИГРАЛИ!!!")
-        else:
-          label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
-        labels[x][y].config(bg="#FD0", text=patr[whos_hit])
-        game_field[x][y]=patr[whos_hit]
-        in_game=0
-        
+#      print(data_in)
+      data_sp = data_in.decode('utf-8').split(";")
+      for i in range (0, (len(data_sp) - 1)):
+        data=str(data_sp[i])
+        type_of_smsg = int(data.split(",")[3])
+        whos_hit=int(data.split(",")[0])
+        x=int(data.split(",")[1])
+        y=int(data.split(",")[2])
+        if type_of_smsg == 4:
+          my_hit = whos_hit
+          if my_hit == int(my_num):
+            label_status.config(bg="#2C2", text="Игра началась,СДЕЛАЙТЕ ВАШ ХОД")
+          else:
+            label_status.config(bg="#2D2", text="Игра началась, сейчас ХОД СОПЕРНИКА")
+          continue
+        if type_of_smsg == 1:
+          if whos_hit == int(my_num):
+            label_status.config(bg="#2C2", text="игра закончена - ВЫ ВЫИГРАЛИ!!!")
+          else:
+            label_status.config(bg="#C22", text="ПОРАЖЕНИЕ... игра закончена !!!")
+          labels[x][y].config(bg="#FD0", text=patr[whos_hit])
+          game_field[x][y]=patr[whos_hit]
+          btn_strt.config(bg="#1C1")
+          in_game=0
+        if type_of_smsg == 5:
+          times=[int(whos_hit), int(x)]
+          yrti=str(times[int(my_num)]//60) + ":" + str(f"{times[int(my_num)]%60:02}")
+          if int(whos_hit) <= 60:
+            mybg="#F33"
+          else:
+            mybg="#1EE"
+
+          soti=str(times[1 - int(my_num)]//60) + ":" + str(f"{times[1 - int(my_num)]%60:02}")
+          if int(x) <= 60:
+            sobg="#F33"
+          else:
+            sobg="#1EE"
+          label_yrti.config(text=yrti, bg=mybg, font="30")
+          label_soti.config(text=soti, bg=sobg, font="30")
+
+
+        if type_of_smsg == 8:
+          if whos_hit == int(my_num):
+            label_status.config(bg="#C22", text="ПОРАЖЕНИЕ --- у Вас закончилось время")
+          else:
+            label_status.config(bg="#2C2", text="ПОБЕДА - у соперника закончилось время !!!")
+          in_game=0
+          btn_strt.config(bg="#1C1")
+
+
 #        server.close()
 
-      print(type_of_smsg, my_num, whos_hit)
+#        print(type_of_smsg, my_num, whos_hit)
 
-      if (type_of_smsg == 0) and (int(whos_hit) == (1 - int(my_num))):
-        labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])
-        label_status.config(bg="#2C2", text="-----Ваш ход-----")
-        game_field[x][y]=patr[1 - int(my_num)]
-        my_hit = 1 - whos_hit
+        if (type_of_smsg == 0) and (int(whos_hit) == (1 - int(my_num))):
+          labels[x][y].config(bg=patr_col[1 - int(my_num)], text=patr[1 - int(my_num)])
+          label_status.config(bg="#2C2", text="-----Ваш ход-----")
+          game_field[x][y]=patr[1 - int(my_num)]
+          my_hit = 1 - whos_hit
 
 
 
@@ -207,17 +236,18 @@ label_status.place(x="3", y="600", width="750", height="50")
 label_igrok = Label(text="Вы играете \n фишками: ", font="30")
 label_igrok.place(x="500", y="20", width="200", height="80")
 color_igrok = Label(text=" ", bg="#111", font="30")
-color_igrok.place(x="700", y="50", width="60", height="70")
-label_yrti = Label(text="00:00")
+color_igrok.place(x="700", y="40", width="60", height="70")
+label_yrti = Label(text="03:00", bg="#1EE", font="30")
 label_yrti.place(x="550", y="100", width="140", height="30")
 
 
-label_sopern = Label(text="Соперник  \n  играет:")
-label_sopern.place(x="500", y="200", width="200", height="30")
-color_sopern = Label(text=" ", bg="#111")
-color_sopern.place(x="700", y="200", width="40", height="30")
-label_soti = Label(text="00:00")
-label_soti.place(x="550", y="230", width="140", height="30")
+label_sopern = Label(text="Соперник  \n  играет:", font="30")
+label_sopern.place(x="500", y="250", width="200", height="80")
+color_sopern = Label(text=" ", bg="#111", font="30")
+color_sopern.place(x="700", y="260", width="60", height="70")
+
+label_soti = Label(text="03:00", bg="#1EE", font="30")
+label_soti.place(x="550", y="350", width="140", height="30")
 
 btn_strt = Button(text="начать игру", padx="3", pady="3", font="13", bg="#1C1", command=h_strt)
 btn_strt.place(x="500", y="450", width="250")
