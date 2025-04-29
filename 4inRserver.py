@@ -161,6 +161,7 @@ def clientthread(conn, addr, ami):
                         list_of_clients[1].send(bytes(msg, 'utf-8'))
                         list_of_clients[1].close()
                         s_od()
+                        return
                       else:
                         msg=str(who_isit) + "," + str(x) + "," + str(y) + ",0;"
                         list_of_clients[1-ami].send(bytes(msg, 'utf-8'))
