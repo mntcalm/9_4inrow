@@ -18,6 +18,7 @@ server.listen(5)
 list_of_clients = []
 who_active = 1 # чей сейчас ход
 
+# очистка поля, количества ходов, списка клиентов-игроков
 def s_od():
   global num_of_hit
   global list_of_clients
@@ -26,10 +27,11 @@ def s_od():
   game_field=[[None] * 6 for i in range(7)]
   num_of_hit=0
 
-
+# проверка, есть ли выигравший
 def check_win(who_isit,x,y):
   global game_field
   clcltr = 0
+  # проверяем вертикаль, в которой сделан ход
   for i in range (0,6):
     if game_field[x][i] == patr[who_isit]:
       clcltr = clcltr + 1
@@ -40,6 +42,7 @@ def check_win(who_isit,x,y):
     else:
       clcltr=0
   clcltr = 0
+  # проверяем горизонталь, в которой сделан ход
   for i in range (0,7):
     if game_field[i][y] == patr[who_isit]:
       clcltr = clcltr + 1
