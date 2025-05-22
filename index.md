@@ -93,3 +93,9 @@ python3 4inRserver_main.py  # или 4inRserver_test.py
 python3 4inR_main.py        # или 4inR_test.py
 
 Зависимости из стандартной библиотеки (socket, tkinter, threading, time)
+
+## 📫 Контакты
+
+- **GitHub**: [mntcalm](https://github.com/mntcalm)
+- **Email**: [mntcalm@gmail.com](mailto:mntcalm@gmail.com)
+- **LinkedIn**: [https://www.linkedin.com/in/oleksandr-dotsenko-037a8037](https://www.linkedin.com/in/oleksandr-dotsenko-037a8037)
