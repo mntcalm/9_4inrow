@@ -101,9 +101,12 @@ def h_strt():
 #    print("проверяем...", my_num)
     for i in range (0, 7):
       for j in range (0, 6):
-        labels[i][j].config(text="{}-{}".format(i,j), bg="#333")
+        labels[i][j].config(bg="#333")
+#        labels[i][j].config(text="{}-{}".format(i,j), bg="#333")
         game_field[i][j]="."
     color_igrok.config(bg=patr_col[int(my_num)], text=patr[int(my_num)])
+    sop_num = 1 - int(my_num)
+    color_sopern.config(bg=patr_col[int(sop_num)], text=patr[int(sop_num)])
     btn_strt.config(bg="#FFF")
 #    asyncio.gather(process_game())
     start_new_thread(process_game,(server,))
@@ -197,9 +200,11 @@ cli_pol.geometry("800x650")
 game_field=[[None] * 6 for i in range(7)]
 labels=[[None] * 6 for i in range(7)]
 
+# Рисуем игровое поле
 for i in range (0, 7):
   for j in range (0, 6):
-    labels[i][j] = Label(text="{}-{}".format(i,j), bd=1, bg="#333")
+    labels[i][j] = Label(bd=1, bg="#333")
+#    labels[i][j] = Label(text="{}-{}".format(i,j), bd=1, bg="#333")
 #    labels[i][j].grid(row=j, column=i, ipadx=15, ipady=15, padx=3, pady=3, height=20, width=30)
     xx= 3 + i*70
     yy= 3 + j*80
@@ -207,7 +212,7 @@ for i in range (0, 7):
 
 
 
-
+# размещаем кнопки
 btn0 = Button(text="T", padx="3", pady="3", font="13", command=h0)
 btn0.place(x="3", y="510", width="65")
 
@@ -233,6 +238,7 @@ label_status.place(x="3", y="600", width="750", height="50")
 
 #labels[2][4].config(bg="#999", text="УРА")
 
+# заполняем данные о игроке: цвет фишек, таймер
 label_igrok = Label(text="Вы играете \n фишками: ", font="30")
 label_igrok.place(x="500", y="20", width="200", height="80")
 color_igrok = Label(text=" ", bg="#111", font="30")
@@ -240,7 +246,7 @@ color_igrok.place(x="700", y="40", width="60", height="70")
 label_yrti = Label(text="03:00", bg="#1EE", font="30")
 label_yrti.place(x="550", y="100", width="140", height="30")
 
-
+# Заполняем данные о сопернике
 label_sopern = Label(text="Соперник  \n  играет:", font="30")
 label_sopern.place(x="500", y="250", width="200", height="80")
 color_sopern = Label(text=" ", bg="#111", font="30")
